@@ -1,0 +1,97 @@
+<div class="row">
+    <div class="col-12 text-center mb-5">
+        <h1 class="display-4 text-primary">
+            <i class="fas fa-hospital-alt me-3"></i>Bienvenido a AppSalud
+        </h1>
+        <p class="lead">Sistema de gestión médica integral</p>
+    </div>
+
+    <% if (!usuario) { %>
+        <!-- SI NO HA INICIADO SESIÓN -->
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow">
+                <div class="card-body text-center p-5">
+                    <i class="fas fa-user-lock fa-4x text-primary mb-4"></i>
+                    <h3 class="card-title mb-3">Acceso Restringido</h3>
+                    <p class="card-text mb-4">
+                        Para acceder al sistema, por favor inicia sesión o regístrate.
+                    </p>
+                    <div class="d-grid gap-2 d-md-block">
+                        <a href="/login" class="btn btn-primary btn-lg me-2">
+                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                        </a>
+                        <a href="/registro" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Registrarse
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } else { %>
+        <!-- SI HA INICIADO SESIÓN -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow border-primary">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                    <h4 class="card-title">Gestión de Pacientes</h4>
+                    <p class="card-text">Administra la información de pacientes, historial médico y datos personales.</p>
+                    <button class="btn btn-outline-primary" disabled>
+                        Próximamente
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow border-success">
+                <div class="card-body text-center">
+                    <i class="fas fa-weight fa-3x text-success mb-3"></i>
+                    <h4 class="card-title">Control de Peso</h4>
+                    <p class="card-text">Registra pesos, calcula IMC y realiza seguimiento de evolución.</p>
+                    <button class="btn btn-outline-success" disabled>
+                        Próximamente
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow border-warning">
+                <div class="card-body text-center">
+                    <i class="fas fa-thermometer-half fa-3x text-warning mb-3"></i>
+                    <h4 class="card-title">Control de Temperatura</h4>
+                    <p class="card-text">Registra y monitorea temperaturas corporales de pacientes.</p>
+                    <button class="btn btn-outline-warning" disabled>
+                        Próximamente
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12 mt-4">
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Tu Información</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Usuario:</strong> <%= usuario.username %></p>
+                            <p><strong>Email:</strong> <%= usuario.email %></p>
+                            <p><strong>Rol:</strong> 
+                                <span class="badge bg-<%= usuario.rol === 'admin' ? 'danger' : 'primary' %>">
+                                    <%= usuario.rol %>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <a href="/logout" class="btn btn-danger">
+                                <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } %>
+</div>

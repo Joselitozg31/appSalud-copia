@@ -1,0 +1,73 @@
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white text-center py-3">
+                <h3 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>Registro de Usuario
+                </h3>
+            </div>
+            <div class="card-body p-4">
+                <form id="registroForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">
+                                <i class="fas fa-user me-1"></i>Usuario *
+                            </label>
+                            <input type="text" class="form-control" id="username" name="username" 
+                                   required placeholder="Ej: juanperez" minlength="3">
+                            <div class="form-text">Mínimo 3 caracteres</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope me-1"></i>Email *
+                            </label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   required placeholder="Ej: usuario@email.com">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="password" class="form-label">
+                                <i class="fas fa-lock me-1"></i>Contraseña *
+                            </label>
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   required placeholder="Mínimo 6 caracteres" minlength="6">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="confirmPassword" class="form-label">
+                                <i class="fas fa-lock me-1"></i>Confirmar Contraseña *
+                            </label>
+                            <input type="password" class="form-control" id="confirmPassword" 
+                                   required placeholder="Repite la contraseña">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="rol" class="form-label">
+                            <i class="fas fa-user-tag me-1"></i>Tipo de Usuario
+                        </label>
+                        <select class="form-select" id="rol" name="rol">
+                            <option value="user">Usuario Normal</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Registrarse
+                        </button>
+                        <a href="/login" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Volver al Login
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Incluir el JS de autenticación -->
+<script src="/js/auth.js"></script>

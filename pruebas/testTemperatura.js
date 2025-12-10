@@ -1,5 +1,5 @@
-const temperaturaDB = require('./temperaturaDB');
-const pacienteDB = require('./pacienteDB');
+const temperaturaDB = require('../model/temperaturaDB');
+const pacienteDB = require('../model/pacienteDB');
 
 // Obtener un paciente para asociar el registro
 pacienteDB.obtenerPacientes((err, pacientes) => {

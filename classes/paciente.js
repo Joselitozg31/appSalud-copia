@@ -1,4 +1,4 @@
-const Bascula = require("./bascula");
+const Bascula = require("../classes/Bascula");
 
 class Paciente {
   constructor(id,nombre, apellidos, fechaDeNacimiento) {

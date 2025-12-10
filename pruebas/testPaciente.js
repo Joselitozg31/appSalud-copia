@@ -1,5 +1,5 @@
-const pacienteDB = require('./pacienteDB');
-const db = require('./config/db');
+const pacienteDB = require('../model/pacienteDB');
+const db = require('../config/db');
 
 // Limpiar la tabla de pacientes
 function limpiarPacientes(callback) {
@@ -48,8 +48,8 @@ limpiarPacientes((err, rows) => {
       // Si es Juan Pérez, modificar el sexo a 'F'
       if (p.nombre === 'Juan' && p.apellidos === 'Pérez') {
         // Buscar el paciente por nombre, apellido y fecha de nacimiento
-        const pacienteDB = require('./pacienteDB');
-        const db = require('./config/db');
+        const pacienteDB = require('../model/pacienteDB');
+        const db = require('../config/db');
         db.query('SELECT id FROM pacientes WHERE nombre = ? AND apellido = ? AND fecha_nacimiento = ?', [p.nombre, p.apellidos, p.fecha_nacimiento], (err, results) => {
           if (err) {
             console.error('Error al buscar paciente Juan Pérez:', err);

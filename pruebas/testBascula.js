@@ -1,6 +1,6 @@
-const basculaDB = require('./basculaDB');
-const pacienteDB = require('./pacienteDB');
-const db = require('./config/db');
+const basculaDB = require('../model/basculaDB');
+const pacienteDB = require('../model/pacienteDB');
+const db = require('../config/db');
 
 // Limpiar la tabla de basculas antes de probar
 function limpiarBasculas(callback) {

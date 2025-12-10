@@ -1,4 +1,4 @@
-const db = require('./config/db');
+const db = require('../config/db');
 
 // Insertar registro de peso y altura
 function insertarBascula(paciente_id, peso, altura, fecha_registro, callback) {

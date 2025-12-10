@@ -1,0 +1,74 @@
+/* public/css/pacientes.css - Estilos específicos para pacientes */
+
+/* Colores personalizados */
+.bg-pink {
+    background-color: #e83e8c !important;
+    color: white;
+}
+
+/* Tablas */
+.table th {
+    font-weight: 600;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Botones de acción */
+.btn-group .btn {
+    border-radius: 4px;
+    margin: 0 2px;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Tarjetas */
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Formularios */
+.form-label.required::after {
+    content: " *";
+    color: #dc3545;
+}
+
+/* Badges personalizados */
+.badge-sexo-M {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.badge-sexo-F {
+    background-color: #e83e8c;
+    color: white;
+}
+
+.badge-sexo-O {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+    
+    .btn-group .btn {
+        margin: 1px;
+        padding: 0.25rem 0.5rem;
+    }
+}

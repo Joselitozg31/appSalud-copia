@@ -1,4 +1,4 @@
-const db = require('./config/db');
+const db = require('../config/db');
 
 // Insertar registro de temperatura
 function insertarTemperatura(paciente_id, temperatura, fecha_registro, callback) {
