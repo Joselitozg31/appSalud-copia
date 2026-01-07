@@ -1,149 +1,206 @@
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3">
-            <i class="fas fa-users me-2"></i>Pacientes
-        </h1>
-        <a href="/pacientes/nuevo" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Nuevo Paciente
-        </a>
-    </div>
-    
-    <!-- Filtros -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Buscar paciente...">
-                </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Pacientes' %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .bg-pink {
+            background-color: #ff69b4 !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar de Bootstrap -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hospital me-2"></i>AppSalud
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/pacientes">
+                            <i class="fas fa-users me-1"></i>Pacientes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/basculas">
+                            <i class="fas fa-weight me-1"></i>Básculas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/temperaturas">
+                            <i class="fas fa-thermometer-half me-1"></i>Temperaturas
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" 
+                           data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i><%= usuario ? usuario.username : 'Usuario' %>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/logout">
+                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
-    </div>
-    
-    <!-- Tabla de pacientes -->
-    <div class="card">
-        <div class="card-body">
-            <% if (pacientes && pacientes.length > 0) { %>
-                <div class="table-responsive">
-                    <table class="table table-hover" id="pacientesTable">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Fecha Nacimiento</th>
-                                <th>Sexo</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% pacientes.forEach(paciente => { %>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container-fluid mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">
+                <i class="fas fa-users me-2"></i>Pacientes
+            </h1>
+            <div class="btn-group" role="group">
+                <a href="/" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Volver al Inicio
+                </a>
+                <a href="/pacientes/nuevo" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Nuevo Paciente
+                </a>
+            </div>
+        </div>
+        
+        <!-- Tabla de pacientes -->
+        <div class="card">
+            <div class="card-body">
+                <% if (pacientes && pacientes.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="pacientesTable">
+                            <thead>
                                 <tr>
-                                    <td><%= paciente.id %></td>
-                                    <td><%= paciente.nombre %></td>
-                                    <td><%= paciente.apellido %></td>
-                                    <td>
-                                        <% if (paciente.fecha_nacimiento) { %>
-                                            <%= new Date(paciente.fecha_nacimiento).toLocaleDateString('es-ES') %>
-                                        <% } else { %>
-                                            -
-                                        <% } %>
-                                    </td>
-                                    <td>
-                                        <% if (paciente.sexo === 'M') { %>
-                                            <span class="badge bg-info">Masculino</span>
-                                        <% } else if (paciente.sexo === 'F') { %>
-                                            <span class="badge bg-pink">Femenino</span>
-                                        <% } else { %>
-                                            <span class="badge bg-secondary">No especificado</span>
-                                        <% } %>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a href="/pacientes/editar/<%= paciente.id %>" 
-                                               class="btn btn-sm btn-outline-primary" 
-                                               title="Editar">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <button class="btn btn-sm btn-outline-danger delete-btn" 
-                                                    data-id="<%= paciente.id %>" 
-                                                    data-name="<%= paciente.nombre %> <%= paciente.apellido %>"
-                                                    title="Eliminar">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                            <a href="/basculas/paciente/<%= paciente.id %>" 
-                                               class="btn btn-sm btn-outline-success" 
-                                               title="Ver peso">
-                                                <i class="fas fa-weight"></i>
-                                            </a>
-                                            <a href="/temperaturas/paciente/<%= paciente.id %>" 
-                                               class="btn btn-sm btn-outline-warning" 
-                                               title="Ver temperatura">
-                                                <i class="fas fa-thermometer-half"></i>
-                                            </a>
-                                        </div>
-                                    </td>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Fecha Nacimiento</th>
+                                    <th>Sexo</th>
+                                    <th>Acciones</th>
                                 </tr>
-                            <% }) %>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <div class="text-muted">
-                        Mostrando <span id="count"><%= pacientes.length %></span> pacientes
+                            </thead>
+                            <tbody>
+                                <% pacientes.forEach(paciente => { %>
+                                    <tr>
+                                        <td><%= paciente.id %></td>
+                                        <td><%= paciente.nombre %></td>
+                                        <td><%= paciente.apellido %></td>
+                                        <td>
+                                            <% if (paciente.fecha_nacimiento) { %>
+                                                <%= new Date(paciente.fecha_nacimiento).toLocaleDateString('es-ES') %>
+                                            <% } else { %>
+                                                -
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% if (paciente.sexo === 'M') { %>
+                                                <span class="badge bg-info"><i class="fas fa-mars me-1"></i>Masculino</span>
+                                            <% } else if (paciente.sexo === 'F') { %>
+                                                <span class="badge bg-pink"><i class="fas fa-venus me-1"></i>Femenino</span>
+                                            <% } else { %>
+                                                <span class="badge bg-secondary">No especificado</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="/pacientes/editar/<%= paciente.id %>" 
+                                                   class="btn btn-sm btn-outline-primary" 
+                                                   title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button class="btn btn-sm btn-outline-danger delete-btn" 
+                                                        data-id="<%= paciente.id %>" 
+                                                        data-name="<%= paciente.nombre %> <%= paciente.apellido %>"
+                                                        title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                <a href="/basculas/paciente/<%= paciente.id %>" 
+                                                   class="btn btn-sm btn-outline-success" 
+                                                   title="Ver peso">
+                                                    <i class="fas fa-weight"></i>
+                                                </a>
+                                                <a href="/temperaturas/paciente/<%= paciente.id %>" 
+                                                   class="btn btn-sm btn-outline-warning" 
+                                                   title="Ver temperatura">
+                                                    <i class="fas fa-thermometer-half"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted">
+                            Mostrando <span id="count"><%= pacientes.length %></span> pacientes
+                        </div>
+                    </div>
+                    
+                <% } else { %>
+                    <div class="text-center py-5">
+                        <i class="fas fa-users fa-4x text-muted mb-3"></i>
+                        <h4>No hay pacientes registrados</h4>
+                        <p class="text-muted">Comienza agregando tu primer paciente.</p>
+                        <a href="/pacientes/nuevo" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus me-2"></i>Agregar Primer Paciente
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Modal de confirmación para eliminar -->
+        <div class="modal fade" id="deleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmar Eliminación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Estás seguro de eliminar al paciente <strong id="patientName"></strong>?</p>
+                        <p class="text-danger"><small>Esta acción no se puede deshacer.</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="confirmDelete">Eliminar</button>
                     </div>
                 </div>
-                
-            <% } else { %>
-                <div class="text-center py-5">
-                    <i class="fas fa-users fa-4x text-muted mb-3"></i>
-                    <h4>No hay pacientes registrados</h4>
-                    <p class="text-muted">Comienza agregando tu primer paciente.</p>
-                    <a href="/pacientes/nuevo" class="btn btn-primary mt-3">
-                        <i class="fas fa-plus me-2"></i>Agregar Primer Paciente
-                    </a>
-                </div>
-            <% } %>
-        </div>
-    </div>
-</div>
-
-<!-- Modal de confirmación para eliminar -->
-<div class="modal fade" id="deleteModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirmar Eliminación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>¿Estás seguro de eliminar al paciente <strong id="patientName"></strong>?</p>
-                <p class="text-danger"><small>Esta acción no se puede deshacer.</small></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" id="confirmDelete">Eliminar</button>
             </div>
         </div>
-    </div>
-</div>
+    </main>
 
-<!-- Incluir el JS específico de pacientes -->
-<script src="/js/pacientes.js"></script>
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-5 py-3">
+        <div class="container text-center">
+            <p class="mb-2 text-muted">
+                <i class="fas fa-heartbeat text-danger me-1"></i>
+                AppSalud - Sistema de Gestión Médica
+            </p>
+            <small class="text-muted">© 2024 - Versión 1.0.0</small>
+        </div>
+    </footer>
 
-<style>
-    .bg-pink {
-        background-color: #e83e8c !important;
-        color: white;
-    }
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    .table th {
-        font-weight: 600;
-        background-color: #f8f9fa;
-    }
-    
-    .btn-group .btn {
-        border-radius: 4px;
-        margin: 0 2px;
-    }
-</style>
+    <!-- JS específico de pacientes -->
+    <script src="/js/pacientes.js"></script>
+</body>
+</html>

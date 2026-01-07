@@ -1,0 +1,143 @@
+/* Estilos específicos para la página de básculas */
+.container-fluid {
+    padding: 20px;
+}
+
+.bg-pink {
+    background-color: #e83e8c !important;
+    color: white;
+}
+
+/* Estilos para la tabla */
+.table th {
+    font-weight: 600;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Badges para clasificación de IMC */
+.badge {
+    font-size: 0.9em;
+    padding: 0.4em 0.8em;
+    border-radius: 4px;
+}
+
+.badge.bg-info {
+    background-color: #17a2b8 !important;
+}
+
+.badge.bg-success {
+    background-color: #28a745 !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+/* Estilos para botones */
+.btn-group .btn {
+    border-radius: 4px;
+    margin: 0 2px;
+    transition: all 0.3s ease;
+}
+
+.btn-group .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Estilos para la tarjeta de información del paciente */
+.card {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Estilos para el modal */
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+}
+
+/* Estilos para el mensaje de vacío */
+.text-center.py-5 {
+    padding: 3rem 0;
+}
+
+.fa-weight {
+    opacity: 0.3;
+}
+
+/* Estilos para la información de edad */
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* Estilos para filtro de búsqueda */
+#filtroBasculas {
+    max-width: 300px;
+    margin-bottom: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 10px;
+    }
+    
+    .table-responsive {
+        margin-bottom: 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+    }
+    
+    .btn-group {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .d-flex.justify-content-between > div {
+        text-align: center;
+    }
+    
+    #filtroBasculas {
+        max-width: 100%;
+    }
+}

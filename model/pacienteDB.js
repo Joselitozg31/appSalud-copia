@@ -8,10 +8,10 @@ function obtenerPacientes(callback) {
   });
 }
 
-// Insertar un nuevo paciente
-function insertarPaciente(nombre, apellidos, fecha_nacimiento, sexo, callback) {
+// Insertar un nuevo paciente - CORREGIDO
+function insertarPaciente(nombre, apellido, fecha_nacimiento, sexo, callback) {
   const sql = 'INSERT INTO pacientes (nombre, apellido, fecha_nacimiento, sexo) VALUES (?, ?, ?, ?)';
-  db.query(sql, [nombre, apellidos, fecha_nacimiento, sexo], (err, result) => {
+  db.query(sql, [nombre, apellido, fecha_nacimiento, sexo], (err, result) => {
     if (err) return callback(err);
     callback(null, result.insertId);
   });
@@ -25,11 +25,10 @@ function obtenerPacientePorId(id, callback) {
   });
 }
 
-
-// Modificar paciente por ID
-function modificarPaciente(id, nombre, apellidos, fecha_nacimiento, sexo, callback) {
+// Modificar paciente por ID - CORREGIDO
+function modificarPaciente(id, nombre, apellido, fecha_nacimiento, sexo, callback) {
   const sql = 'UPDATE pacientes SET nombre = ?, apellido = ?, fecha_nacimiento = ?, sexo = ? WHERE id = ?';
-  db.query(sql, [nombre, apellidos, fecha_nacimiento, sexo, id], (err, result) => {
+  db.query(sql, [nombre, apellido, fecha_nacimiento, sexo, id], (err, result) => {
     if (err) return callback(err);
     callback(null, result.affectedRows);
   });

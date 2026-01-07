@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Registros de Peso' %></title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS específico de básculas -->
+    <link rel="stylesheet" href="/css/basculas.css">
+</head>
+<body>
+    <!-- Navbar de Bootstrap -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hospital me-2"></i>AppSalud
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pacientes">
+                            <i class="fas fa-users me-1"></i>Pacientes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/basculas">
+                            <i class="fas fa-weight me-1"></i>Básculas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/temperaturas">
+                            <i class="fas fa-thermometer-half me-1"></i>Temperaturas
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" 
+                           data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i><%= usuario ? usuario.username : 'Usuario' %>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/logout">
+                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container-fluid mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">
+                <i class="fas fa-weight me-2"></i>
+                <% if (paciente) { %>
+                    Registros de Peso - <%= paciente.nombre %> <%= paciente.apellido %>
+                <% } else { %>
+                    Registros de Peso
+                <% } %>
+            </h1>
+            <div>
+                <!-- Enlace actualizado: sin paciente_id cuando no hay paciente específico -->
+                <% if (paciente) { %>
+                    <a href="/basculas/nuevo/<%= paciente.id %>" class="btn btn-primary me-2">
+                        <i class="fas fa-plus me-2"></i>Nuevo Registro
+                    </a>
+                    <a href="/temperaturas/paciente/<%= paciente.id %>" class="btn btn-warning me-2">
+                        <i class="fas fa-thermometer-half me-2"></i>Ver Temperaturas
+                    </a>
+                <% } else { %>
+                    <a href="/basculas/nuevo" class="btn btn-primary me-2">
+                        <i class="fas fa-plus me-2"></i>Nuevo Registro
+                    </a>
+                <% } %>
+                <button id="exportBtn" class="btn btn-success me-2">
+                    <i class="fas fa-file-excel me-2"></i>Exportar
+                </button>
+                <a href="/pacientes" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Volver a Pacientes
+                </a>
+            </div>
+        </div>
+        
+        <!-- Información del paciente si existe -->
+        <% if (paciente) { %>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Paciente:</strong> <%= paciente.nombre %> <%= paciente.apellido %></p>
+                            <!-- Usar la función calcularEdad del servidor -->
+                            <% if (paciente.fecha_nacimiento && calcularEdad) { %>
+                                <p><strong>Edad:</strong> <%= calcularEdad(paciente.fecha_nacimiento) %> años</p>
+                            <% } %>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Sexo:</strong> 
+                                <% if (paciente.sexo === 'M') { %>
+                                    <span class="badge bg-info">Masculino</span>
+                                <% } else if (paciente.sexo === 'F') { %>
+                                    <span class="badge bg-pink">Femenino</span>
+                                <% } %>
+                            </p>
+                            <p><strong>ID:</strong> <%= paciente.id %></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+        
+        <!-- Tabla de registros -->
+        <div class="card">
+            <div class="card-body">
+                <% if (registros && registros.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="basculasTable">
+                            <thead>
+                                <tr>
+                                    <th>Paciente</th>
+                                    <th>Fecha Nacimiento</th>
+                                    <th>Fecha</th>
+                                    <th>Peso (kg)</th>
+                                    <th>Altura (cm)</th>
+                                    <th>IMC</th>
+                                    <th>Clasificación</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% registros.forEach(registro => { %>
+                                    <tr>
+                                        <td>
+                                            <% if (registro.nombre_paciente) { %>
+                                                <strong><%= registro.nombre_paciente %></strong>
+                                            <% } else { %>
+                                                <span class="text-muted">-</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% if (registro.fecha_nacimiento) { %>
+                                                <%= new Date(registro.fecha_nacimiento).toLocaleDateString('es-ES') %>
+                                            <% } else { %>
+                                                <span class="text-muted">-</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% if (registro.fecha_registro) { %>
+                                                <%= new Date(registro.fecha_registro).toLocaleDateString('es-ES') %>
+                                                <br>
+                                                <small class="text-muted">
+                                                    <%= new Date(registro.fecha_registro).toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'}) %>
+                                                </small>
+                                            <% } else { %>
+                                                -
+                                            <% } %>
+                                        </td>
+                                        <td><strong><%= registro.peso %></strong> kg</td>
+                                        <td><%= registro.altura %> cm</td>
+                                        <td>
+                                            <% if (registro.imc) { %>
+                                                <span class="badge 
+                                                    <%= registro.imc < 18.5 ? 'bg-info' : 
+                                                       registro.imc < 25 ? 'bg-success' : 
+                                                       registro.imc < 30 ? 'bg-warning' : 'bg-danger' %>">
+                                                    <%= registro.imc %>
+                                                </span>
+                                            <% } else { %>
+                                                -
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% if (registro.clasificacion) { %>
+                                                <span class="badge 
+                                                    <%= registro.clasificacion === 'Bajo peso' ? 'bg-info' : 
+                                                       registro.clasificacion === 'Normal' ? 'bg-success' : 
+                                                       registro.clasificacion === 'Sobrepeso' ? 'bg-warning' : 'bg-danger' %>">
+                                                    <%= registro.clasificacion %>
+                                                </span>
+                                            <% } else { %>
+                                                -
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="/basculas/editar/<%= registro.id %>" 
+                                                   class="btn btn-sm btn-outline-primary" 
+                                                   title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button class="btn btn-sm btn-outline-danger delete-btn" 
+                                                        data-id="<%= registro.id %>" 
+                                                        title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted">
+                            Mostrando <span id="count"><%= registros.length %></span> registros
+                        </div>
+                        <% if (!paciente) { %>
+                            <div class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Mostrando todos los registros del sistema
+                            </div>
+                        <% } %>
+                    </div>
+                    
+                <% } else { %>
+                    <div class="text-center py-5">
+                        <i class="fas fa-weight fa-4x text-muted mb-3"></i>
+                        <h4>No hay registros de peso</h4>
+                        <p class="text-muted">
+                            <% if (paciente) { %>
+                                Aún no hay registros de peso para <%= paciente.nombre %>.
+                            <% } else { %>
+                                Aún no hay registros de peso en el sistema.
+                            <% } %>
+                        </p>
+                        <!-- Enlaces actualizados en la sección de "no hay registros" -->
+                        <% if (paciente) { %>
+                            <a href="/basculas/nuevo/<%= paciente.id %>" class="btn btn-primary mt-3">
+                                <i class="fas fa-plus me-2"></i>Agregar Primer Registro
+                            </a>
+                        <% } else { %>
+                            <a href="/basculas/nuevo" class="btn btn-primary mt-3">
+                                <i class="fas fa-plus me-2"></i>Agregar Primer Registro
+                            </a>
+                        <% } %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación para eliminar -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+        </div>
+
+        <!-- Modal de confirmación para eliminar -->
+        <div class="modal fade" id="deleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmar Eliminación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Estás seguro de eliminar este registro de peso?</p>
+                        <p class="text-danger"><small>Esta acción no se puede deshacer.</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="confirmDelete">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-5 py-3">
+        <div class="container text-center">
+            <p class="mb-2 text-muted">
+                <i class="fas fa-heartbeat text-danger me-1"></i>
+                AppSalud - Sistema de Gestión Médica
+            </p>
+            <small class="text-muted">© 2024 - Versión 1.0.0</small>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JS específico de básculas -->
+    <script src="/js/basculas.js"></script>
+</body>
+</html>

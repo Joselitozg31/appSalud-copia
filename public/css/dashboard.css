@@ -1,0 +1,201 @@
+/* public/css/dashboard.css */
+
+/* Tarjetas del dashboard */
+.dashboard-card {
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-card .card-body {
+    padding: 2rem;
+}
+
+.dashboard-card .card-footer {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1rem 2rem;
+}
+
+/* Iconos de las tarjetas */
+.card-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+}
+
+/* Botones del dashboard */
+.dashboard-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dashboard-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Estadísticas */
+.stats-container {
+    padding: 1.5rem 0;
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Colores de estadísticas */
+.stat-primary { color: var(--bs-primary); }
+.stat-success { color: var(--bs-success); }
+.stat-warning { color: var(--bs-warning); }
+.stat-info { color: var(--bs-info); }
+
+/* Acciones rápidas */
+.quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    padding: 1.5rem 0;
+}
+
+.quick-action-btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.quick-action-btn:hover {
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+/* Hero section */
+.hero-section {
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+}
+
+.hero-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--bs-primary), #0056b3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    color: #6c757d;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Mensaje cuando no hay pacientes */
+.empty-state {
+    padding: 4rem 2rem;
+    text-align: center;
+    border-radius: 12px;
+    background-color: #f8f9fa;
+    border: 2px dashed #dee2e6;
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    color: #adb5bd;
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard-card .card-body {
+        padding: 1.5rem;
+    }
+    
+    .hero-title {
+        font-size: 2.2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+    }
+    
+    .card-icon {
+        font-size: 2.8rem;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard-card {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+
+/* Loader para estadísticas */
+.stat-loader {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--bs-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Registrar Temperatura' %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hospital me-2"></i>AppSalud
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pacientes">
+                            <i class="fas fa-users me-1"></i>Pacientes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/basculas">
+                            <i class="fas fa-weight me-1"></i>Básculas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/temperaturas">
+                            <i class="fas fa-thermometer-half me-1"></i>Temperaturas
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i><%= usuario ? usuario.username : 'Usuario' %>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-4"><i class="fas fa-thermometer-half me-2"></i><%= title %></h4>
+
+                <form id="tempForm">
+                    <div class="mb-3">
+                        <label class="form-label">Paciente</label>
+                        <% if (paciente) { %>
+                            <input type="text" class="form-control" value="<%= paciente.nombre %> <%= paciente.apellido %>" disabled>
+                            <input type="hidden" id="paciente_id" name="paciente_id" value="<%= paciente.id %>">
+                        <% } else { %>
+                            <select id="paciente_id" name="paciente_id" class="form-select">
+                                <option value="">-- Selecciona un paciente --</option>
+                                <% if (pacientes) { pacientes.forEach(p => { %>
+                                    <option value="<%= p.id %>"><%= p.nombre %> <%= p.apellido %></option>
+                                <% }) } %>
+                            </select>
+                        <% } %>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Temperatura (°C)</label>
+                        <input type="number" step="0.1" id="temperatura" name="temperatura" class="form-control" value="<%= registro ? registro.temperatura : '' %>">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Fecha de medición</label>
+                        <input type="datetime-local" id="fecha_medicion" name="fecha_medicion" class="form-control" value="<%= registro && registro.fecha_medicion ? new Date(registro.fecha_medicion).toISOString().slice(0,16) : '' %>">
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <% if (registro) { %>
+                            <button type="button" id="saveBtn" class="btn btn-primary">Actualizar</button>
+                        <% } else { %>
+                            <button type="button" id="saveBtn" class="btn btn-success">Guardar</button>
+                        <% } %>
+                        <a href="/temperaturas" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-light py-3 mt-5">
+        <div class="container text-center text-muted">© AppSalud</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/temperaturas.js"></script>
+    <script>
+        // Inicializar con datos si edición
+        const existingRegistro = <%- JSON.stringify(registro || null) %>;
+        if (existingRegistro) {
+            document.getElementById('temperatura').value = existingRegistro.temperatura;
+            if (existingRegistro.fecha_medicion) {
+                document.getElementById('fecha_medicion').value = new Date(existingRegistro.fecha_medicion).toISOString().slice(0,16);
+            }
+        }
+    </script>
+</body>
+</html>

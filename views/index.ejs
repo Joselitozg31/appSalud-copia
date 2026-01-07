@@ -1,97 +1,230 @@
-<div class="row">
-    <div class="col-12 text-center mb-5">
-        <h1 class="display-4 text-primary">
-            <i class="fas fa-hospital-alt me-3"></i>Bienvenido a AppSalud
-        </h1>
-        <p class="lead">Sistema de gestión médica integral</p>
-    </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Inicio' %></title>
+    
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Nuestros estilos -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+    <!-- Navbar de Bootstrap -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hospital me-2"></i>AppSalud
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <% if (usuario) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">
+                                <i class="fas fa-home me-1"></i>Inicio
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/pacientes">
+                                <i class="fas fa-users me-1"></i>Pacientes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/basculas">
+                                <i class="fas fa-weight me-1"></i>Básculas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/temperaturas">
+                                <i class="fas fa-thermometer-half me-1"></i>Temperaturas
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" 
+                               data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-1"></i><%= usuario.username %>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><span class="dropdown-item-text">
+                                    <small><i class="fas fa-user-tag me-1"></i>Rol: <%= usuario.rol %></small>
+                                </span></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                                </a></li>
+                            </ul>
+                        </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">
+                                <i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/registro">
+                                <i class="fas fa-user-plus me-1"></i>Registrarse
+                            </a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <% if (!usuario) { %>
-        <!-- SI NO HA INICIADO SESIÓN -->
-        <div class="col-md-6 offset-md-3">
-            <div class="card shadow">
-                <div class="card-body text-center p-5">
-                    <i class="fas fa-user-lock fa-4x text-primary mb-4"></i>
-                    <h3 class="card-title mb-3">Acceso Restringido</h3>
-                    <p class="card-text mb-4">
-                        Para acceder al sistema, por favor inicia sesión o regístrate.
-                    </p>
-                    <div class="d-grid gap-2 d-md-block">
-                        <a href="/login" class="btn btn-primary btn-lg me-2">
-                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
-                        </a>
-                        <a href="/registro" class="btn btn-outline-primary btn-lg">
-                            <i class="fas fa-user-plus me-2"></i>Registrarse
-                        </a>
+    <!-- Main Content -->
+    <main class="container my-4">
+        <div class="row">
+            <div class="col-12 text-center mb-5 hero-section">
+                <h1 class="hero-title">
+                    <i class="fas fa-hospital-alt me-3"></i>Bienvenido a AppSalud
+                </h1>
+                <p class="hero-subtitle">Sistema de gestión médica integral</p>
+            </div>
+
+            <% if (!usuario) { %>
+                <!-- SI NO HA INICIADO SESIÓN -->
+                <div class="col-md-6 offset-md-3">
+                    <div class="card dashboard-card">
+                        <div class="card-body text-center p-5">
+                            <i class="fas fa-user-lock card-icon text-primary"></i>
+                            <h3 class="card-title mb-3">Acceso Restringido</h3>
+                            <p class="card-text mb-4">
+                                Para acceder al sistema, por favor inicia sesión o regístrate.
+                            </p>
+                            <div class="d-grid gap-2 d-md-block">
+                                <a href="/login" class="btn btn-primary btn-lg me-2 dashboard-btn">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                                </a>
+                                <a href="/registro" class="btn btn-outline-primary btn-lg dashboard-btn">
+                                    <i class="fas fa-user-plus me-2"></i>Registrarse
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    <% } else { %>
-        <!-- SI HA INICIADO SESIÓN -->
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow border-primary">
-                <div class="card-body text-center">
-                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
-                    <h4 class="card-title">Gestión de Pacientes</h4>
-                    <p class="card-text">Administra la información de pacientes, historial médico y datos personales.</p>
-                    <button class="btn btn-outline-primary" disabled>
-                        Próximamente
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow border-success">
-                <div class="card-body text-center">
-                    <i class="fas fa-weight fa-3x text-success mb-3"></i>
-                    <h4 class="card-title">Control de Peso</h4>
-                    <p class="card-text">Registra pesos, calcula IMC y realiza seguimiento de evolución.</p>
-                    <button class="btn btn-outline-success" disabled>
-                        Próximamente
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow border-warning">
-                <div class="card-body text-center">
-                    <i class="fas fa-thermometer-half fa-3x text-warning mb-3"></i>
-                    <h4 class="card-title">Control de Temperatura</h4>
-                    <p class="card-text">Registra y monitorea temperaturas corporales de pacientes.</p>
-                    <button class="btn btn-outline-warning" disabled>
-                        Próximamente
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-12 mt-4">
-            <div class="card shadow">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Tu Información</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Usuario:</strong> <%= usuario.username %></p>
-                            <p><strong>Email:</strong> <%= usuario.email %></p>
-                            <p><strong>Rol:</strong> 
-                                <span class="badge bg-<%= usuario.rol === 'admin' ? 'danger' : 'primary' %>">
-                                    <%= usuario.rol %>
-                                </span>
-                            </p>
-                        </div>
-                        <div class="col-md-6 text-end">
-                            <a href="/logout" class="btn btn-danger">
-                                <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
+            <% } else { %>
+                <!-- SI HA INICIADO SESIÓN -->
+                <div class="col-md-4 mb-4">
+                    <div class="card dashboard-card border-primary delay-1">
+                        <div class="card-body text-center">
+                            <i class="fas fa-users card-icon text-primary"></i>
+                            <h4 class="card-title">Gestión de Pacientes</h4>
+                            <p class="card-text">Administra la información de pacientes, historial médico y datos personales.</p>
+                            <a href="/pacientes" class="btn btn-primary dashboard-btn">
+                                <i class="fas fa-arrow-right me-2"></i>Ir a Pacientes
                             </a>
                         </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                CRUD completo: Crear, leer, actualizar, eliminar
+                            </small>
+                        </div>
                     </div>
                 </div>
-            </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card dashboard-card border-success delay-2">
+                        <div class="card-body text-center">
+                            <i class="fas fa-weight card-icon text-success"></i>
+                            <h4 class="card-title">Control de Peso</h4>
+                            <p class="card-text">Registra pesos, calcula IMC y realiza seguimiento de evolución.</p>
+                            <a href="/basculas" class="btn btn-success dashboard-btn">
+                                <i class="fas fa-arrow-right me-2"></i>Ir a Básculas
+                            </a>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                <i class="fas fa-calculator me-1"></i>
+                                Cálculo automático de IMC y clasificación
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card dashboard-card border-warning delay-3">
+                        <div class="card-body text-center">
+                            <i class="fas fa-thermometer-half card-icon text-warning"></i>
+                            <h4 class="card-title">Control de Temperatura</h4>
+                            <p class="card-text">Registra y monitorea temperaturas corporales de pacientes.</p>
+                            <a href="/temperaturas" class="btn btn-warning dashboard-btn">
+                                <i class="fas fa-arrow-right me-2"></i>Ir a Temperaturas
+                            </a>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                <i class="fas fa-sync-alt me-1"></i>
+                                Conversión Celsius/Fahrenheit
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ESTADÍSTICAS -->
+                <div class="col-12 mt-4">
+                    <div class="card dashboard-card">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="fas fa-database me-2"></i>Datos en Base de Datos
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center stats-container">
+                                <div class="col-md-4">
+                                    <div class="p-3">
+                                        <h2 class="stat-number stat-primary"><%= stats.pacientes %></h2>
+                                        <p class="stat-label">Pacientes</p>
+                                        <a href="/pacientes" class="btn btn-sm btn-outline-primary mt-2">Ver Pacientes</a>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="p-3">
+                                        <h2 class="stat-number stat-success"><%= stats.basculas %></h2>
+                                        <p class="stat-label">Registros de Peso</p>
+                                        <a href="/basculas" class="btn btn-sm btn-outline-success mt-2">Ver Básculas</a>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="p-3">
+                                        <h2 class="stat-number stat-warning"><%= stats.temperaturas %></h2>
+                                        <p class="stat-label">Registros de Temperatura</p>
+                                        <a href="/temperaturas" class="btn btn-sm btn-outline-warning mt-2">Ver Temperaturas</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
         </div>
-    <% } %>
-</div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-5 py-3">
+        <div class="container text-center">
+            <p class="mb-2 text-white">
+                <i class="fas fa-heartbeat text-danger me-1"></i>
+                AppSalud - Sistema de Gestión Médica
+            </p>
+            <small class="text-white">© 2024 - Versión 1.0.0</small>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Nuestros scripts -->
+    <script src="/js/main.js"></script>
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

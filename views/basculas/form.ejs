@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS específico del formulario de básculas -->
+    <link rel="stylesheet" href="/css/bascula-form.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-hospital me-2"></i>AppSalud
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/pacientes"><i class="fas fa-users me-1"></i>Pacientes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/basculas"><i class="fas fa-weight me-1"></i>Básculas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/temperaturas"><i class="fas fa-thermometer-half me-1"></i>Temperaturas</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i><%= usuario ? usuario.username : 'Usuario' %>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4">
+        <h1><%= title %></h1>
+        
+        <% if (paciente) { %>
+            <div class="alert alert-info d-flex align-items-center justify-content-between">
+                <div>
+                    <i class="fas fa-user me-2"></i>
+                    Paciente: <strong><%= paciente.nombre %> <%= paciente.apellido %></strong>
+                    <% if (paciente.fecha_nacimiento && calcularEdad) { %>
+                        | Edad: <strong><%= calcularEdad(paciente.fecha_nacimiento) %> años</strong>
+                    <% } %>
+                </div>
+                <div>
+                    <a href="/temperaturas/paciente/<%= paciente.id %>" class="btn btn-sm btn-warning">
+                        <i class="fas fa-thermometer-half me-1"></i>Ver Temperaturas
+                    </a>
+                </div>
+            </div>
+        <% } %>
+        
+        <form id="formBascula" method="POST" 
+              action="<%= registro ? '/basculas/api/' + registro.id : '/basculas/api' %>">
+            <% if (registro) { %>
+                <input type="hidden" name="_method" value="PUT">
+            <% } %>
+            
+            <% if (!paciente) { %>
+                <div class="mb-3">
+                    <label for="paciente_id" class="form-label">
+                        <i class="fas fa-user-injured me-2"></i>Paciente
+                    </label>
+                    <select class="form-select" id="paciente_id" name="paciente_id" required>
+                        <option value="">Seleccionar paciente...</option>
+                        <% pacientes.forEach(p => { %>
+                            <option value="<%= p.id %>" 
+                                    <%= (registro && registro.paciente_id == p.id) ? 'selected' : '' %>>
+                                <%= p.nombre %> <%= p.apellido %>
+                                <% if (p.fecha_nacimiento && calcularEdad) { %>
+                                    (Edad: <%= calcularEdad(p.fecha_nacimiento) %> años)
+                                <% } %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+            <% } else { %>
+                <input type="hidden" name="paciente_id" value="<%= paciente.id %>">
+            <% } %>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="peso" class="form-label">
+                        <i class="fas fa-weight me-2"></i>Peso (kg)
+                    </label>
+                    <input type="number" step="0.01" class="form-control" id="peso" 
+                           name="peso" value="<%= registro ? registro.peso : '' %>" 
+                           placeholder="Ej: 70.5" required>
+                    <div class="form-text">Ingrese el peso en kilogramos</div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="altura" class="form-label">
+                        <i class="fas fa-ruler-vertical me-2"></i>Altura (cm)
+                    </label>
+                    <input type="number" step="1" class="form-control" id="altura" 
+                           name="altura" value="<%= registro ? registro.altura : '' %>" 
+                           placeholder="Ej: 175" required>
+                    <div class="form-text">Ingrese la altura en centímetros</div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="fecha_medicion" class="form-label">
+                    <i class="fas fa-calendar-alt me-2"></i>Fecha de medición
+                </label>
+                <input type="datetime-local" class="form-control" id="fecha_medicion" 
+                       name="fecha_medicion" 
+                       value="<%= registro && registro.fecha_registro ? 
+                               new Date(registro.fecha_registro).toISOString().slice(0,16) : '' %>">
+                <div class="form-text">Deje vacío para usar la fecha y hora actual</div>
+            </div>
+            
+            <!-- Mostrar IMC si estamos editando -->
+            <% if (registro && registro.imc) { %>
+                <div class="alert alert-success">
+                    <h5>
+                        <i class="fas fa-calculator me-2"></i>
+                        IMC Calculado: <span class="badge bg-success"><%= registro.imc %></span>
+                    </h5>
+                    <p class="mb-0">
+                        Clasificación: <span class="badge 
+                        <%= registro.clasificacion === 'Bajo peso' ? 'bg-info' : 
+                           registro.clasificacion === 'Normal' ? 'bg-success' : 
+                           registro.clasificacion === 'Sobrepeso' ? 'bg-warning' : 'bg-danger' %>">
+                            <i class="fas fa-chart-bar me-1"></i><%= registro.clasificacion %>
+                        </span>
+                    </p>
+                </div>
+            <% } %>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <a href="<%= paciente ? '/basculas/paciente/' + paciente.id : '/basculas' %>" 
+                   class="btn btn-secondary btn-lg">
+                    <i class="fas fa-times me-2"></i>Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-save me-2"></i>
+                    <%= registro ? 'Actualizar' : 'Guardar Registro' %>
+                </button>
+            </div>
+        </form>
+    </main>
+    
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JS específico del formulario de básculas -->
+    <script src="/js/bascula-form.js"></script>
+</body>
+</html>

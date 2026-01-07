@@ -1,6 +1,5 @@
-// public/js/auth.js
+// public/js/auth.js - Versión corregida
 
-// ========== FUNCIONES PARA LOGIN ==========
 async function handleLogin(event) {
     event.preventDefault();
     
@@ -20,14 +19,26 @@ async function handleLogin(event) {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include', // ← IMPORTANTE: incluye cookies
             body: JSON.stringify(formData)
         });
         
         const data = await response.json();
         
-        if (response.ok) {
-            // Redirigir al inicio después de login exitoso
-            window.location.href = '/';
+        if (response.ok && data.success) {
+            // Guardar token en localStorage (opcional para API)
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+            }
+            
+            // Mostrar mensaje de éxito
+            showSuccess('¡Login exitoso! Redirigiendo...');
+            
+            // Esperar un momento y redirigir
+            setTimeout(() => {
+                // Recargar la página para que la sesión se active
+                window.location.href = '/';
+            }, 1000);
         } else {
             showError(data.error || 'Error en el login');
         }
@@ -37,7 +48,6 @@ async function handleLogin(event) {
     }
 }
 
-// ========== FUNCIONES PARA REGISTRO ==========
 async function handleRegister(event) {
     event.preventDefault();
     
@@ -76,12 +86,13 @@ async function handleRegister(event) {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include', // ← IMPORTANTE
             body: JSON.stringify(formData)
         });
         
         const data = await response.json();
         
-        if (response.ok) {
+        if (response.ok && data.success) {
             showSuccess('¡Registro exitoso! Redirigiendo al login...');
             setTimeout(() => {
                 window.location.href = '/login';
@@ -95,9 +106,8 @@ async function handleRegister(event) {
     }
 }
 
-// ========== FUNCIONES DE UTILIDAD ==========
+// Funciones de utilidad
 function showError(message) {
-    // Crear alerta de error
     const alertDiv = document.createElement('div');
     alertDiv.className = 'alert alert-danger alert-dismissible fade show';
     alertDiv.innerHTML = `
@@ -105,20 +115,20 @@ function showError(message) {
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
     
-    // Insertar al inicio del formulario
     const form = document.querySelector('form');
-    form.parentNode.insertBefore(alertDiv, form);
+    if (form) {
+        form.parentNode.insertBefore(alertDiv, form);
+    }
     
-    // Auto-eliminar después de 5 segundos
     setTimeout(() => {
         if (alertDiv.parentNode) {
-            alertDiv.remove();
+            const bsAlert = new bootstrap.Alert(alertDiv);
+            bsAlert.close();
         }
     }, 5000);
 }
 
 function showSuccess(message) {
-    // Crear alerta de éxito
     const alertDiv = document.createElement('div');
     alertDiv.className = 'alert alert-success alert-dismissible fade show';
     alertDiv.innerHTML = `
@@ -126,45 +136,48 @@ function showSuccess(message) {
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
     
-    // Insertar al inicio del formulario
     const form = document.querySelector('form');
-    form.parentNode.insertBefore(alertDiv, form);
+    if (form) {
+        form.parentNode.insertBefore(alertDiv, form);
+    }
     
-    // Auto-eliminar después de 5 segundos
     setTimeout(() => {
         if (alertDiv.parentNode) {
-            alertDiv.remove();
+            const bsAlert = new bootstrap.Alert(alertDiv);
+            bsAlert.close();
         }
     }, 5000);
 }
 
-// ========== INICIALIZACIÓN ==========
+// Inicialización
 document.addEventListener('DOMContentLoaded', function() {
-    // Configurar formulario de login
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
     }
     
-    // Configurar formulario de registro
     const registroForm = document.getElementById('registroForm');
     if (registroForm) {
         registroForm.addEventListener('submit', handleRegister);
     }
     
-    // Validación en tiempo real para contraseñas
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-    
-    if (passwordInput && confirmPasswordInput) {
-        confirmPasswordInput.addEventListener('input', function() {
-            if (passwordInput.value !== confirmPasswordInput.value) {
-                confirmPasswordInput.classList.add('is-invalid');
-                confirmPasswordInput.classList.remove('is-valid');
-            } else {
-                confirmPasswordInput.classList.remove('is-invalid');
-                confirmPasswordInput.classList.add('is-valid');
-            }
-        });
-    }
+    // Verificar si ya está logueado
+    checkAuthStatus();
 });
+
+// Verificar estado de autenticación
+async function checkAuthStatus() {
+    try {
+        const response = await fetch('/api/auth/verificar', {
+            credentials: 'include'
+        });
+        const data = await response.json();
+        
+        if (data.autenticado && window.location.pathname === '/login') {
+            // Si ya está logueado y está en login, redirigir
+            window.location.href = '/';
+        }
+    } catch (error) {
+        console.error('Error verificando autenticación:', error);
+    }
+}

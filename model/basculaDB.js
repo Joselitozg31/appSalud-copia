@@ -29,7 +29,20 @@ function insertarBascula(paciente_id, peso, altura, fecha_registro, callback) {
 
 // Listar todos los registros de bascula
 function obtenerBasculas(callback) {
-  db.query('SELECT * FROM basculas', (err, results) => {
+  db.query(`
+    SELECT b.id, 
+           b.paciente_id,
+           b.peso,
+           b.altura,
+           b.fecha_registro,
+           CONCAT(p.nombre, ' ', p.apellido) as nombre_paciente,
+           p.nombre,
+           p.apellido,
+           p.fecha_nacimiento
+    FROM basculas b
+    LEFT JOIN pacientes p ON b.paciente_id = p.id
+    ORDER BY b.fecha_registro DESC
+  `, (err, results) => {
     if (err) return callback(err);
     callback(null, results);
   });
@@ -84,12 +97,31 @@ function clasificacionIMC(imc) {
   return 'Obesidad';
 }
 
+// Obtener registros por paciente ID
+function obtenerPorPacienteId(pacienteId, callback) {
+    db.query('SELECT * FROM basculas WHERE paciente_id = ? ORDER BY fecha_registro DESC', [pacienteId], (err, results) => {
+        if (err) return callback(err);
+        callback(null, results);
+    });
+}
+
+// Obtener última medición de un paciente
+function obtenerUltimaMedicion(pacienteId, callback) {
+    db.query('SELECT * FROM basculas WHERE paciente_id = ? ORDER BY fecha_registro DESC LIMIT 1', [pacienteId], (err, results) => {
+        if (err) return callback(err);
+        callback(null, results[0]);
+    });
+}
+
+// Actualiza el module.exports para incluir las nuevas funciones
 module.exports = {
-  insertarBascula,
-  obtenerBasculas,
-  obtenerBasculaPorId,
-  modificarBascula,
-  eliminarBascula,
-  calcularIMC,
-  clasificacionIMC
+    insertarBascula,
+    obtenerBasculas,
+    obtenerBasculaPorId,
+    modificarBascula,
+    eliminarBascula,
+    calcularIMC,
+    clasificacionIMC,
+    obtenerPorPacienteId,      // NUEVA
+    obtenerUltimaMedicion      // NUEVA
 };
